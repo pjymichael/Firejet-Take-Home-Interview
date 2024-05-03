@@ -29,24 +29,44 @@ fs.readFile('src/exhibitA.ts', 'utf-8', async (err: NodeJS.ErrnoException | null
     // Object to store the linted code
     const lintedCodeObj: { [key: string]: string } = {};
 
+    // Array to store the promises to be linted
+    const lintPromises: Promise<string>[] = [];
+
     // Traverse the AST to find and lint template literals prefixed with /*tsx*/
-    await traverse(ast, {
+    traverse(ast, {
         TemplateLiteral(path) {
             const comments = path.node.leadingComments;
             if (comments && comments.length > 0 && comments[0].value === 'tsx') {
                 const code = path.node.quasis.map(quasi => quasi.value.raw).join('');
-                lint(code).then((lintedCode) => {
-                    // Remove backticks from linted code
-                    const trimmedLintedCode = lintedCode.substring(1, lintedCode.length - 1);
-                    // Store linted code in object
-                    lintedCodeObj[path.node.start!] = trimmedLintedCode;
+                const lintPromise = lint(code).then((lintedCode) => {
+                    // Remove backticks from lintedCode
+                    const trimmedLintedCode = lintedCode.substring(0, lintedCode.length - 1);
+                    return trimmedLintedCode; // Return the linted code
                 });
+                lintPromises.push(lintPromise);
             }
         },
     });
 
-    // Wait for all linted code to be processed
-    await Promise.all(Object.values(lintedCodeObj));
+    // Wait for all promises to be resolved first
+    const lintedCodes = await Promise.all(lintPromises);
+    console.log(lintedCodes);
+
+    // Once all promises are resolved, we can traverse the AST again to replace the original code with the linted code
+    traverse(ast, {
+        TemplateLiteral(path) {
+            const comments = path.node.leadingComments;
+            if (comments && comments.length > 0 && comments[0].value === 'tsx') {
+                const lintedCode = lintedCodes.shift(); // Get the next linted code
+                if (lintedCode) {
+                    // Replace the original code with the linted code
+                    path.node.quasis[0].value.raw = lintedCode;
+                    path.node.quasis[0].value.cooked = lintedCode;
+                }
+            }
+        },
+    });
+
 
     // Generate modified code from the AST
     const modifiedCode = require('@babel/generator').default(ast).code;
@@ -68,7 +88,7 @@ fs.readFile('src/exhibitA.ts', 'utf-8', async (err: NodeJS.ErrnoException | null
 
 // Time Complexity:
 // Parsing = O(n), n is size of code block
-// Traversing = O(m), m nodes in AST
+// Traversing = O(2 * m), m nodes in AST, since we need to traverse twice first for linting and then for replacing
 // Linting = O(k), k is size of template literal
 // Overall time complexity = O(n + m + k)
 

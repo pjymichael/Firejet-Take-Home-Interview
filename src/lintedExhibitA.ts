@@ -42,7 +42,17 @@ const packageJson = {
 export const DEFAULT_REACT_LOADING_FILES: SandpackBundlerFiles = {
   "/App.tsx": {
     code: /*tsx*/`export default function App() {
-        return <div style={{width: "100%", height:"90vh", overflow:'none', display:"grid", placeItems:"center"}}><svg
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "90vh",
+        overflow: "none",
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      <svg
         xmlns="http://www.w3.org/2000/svg"
         width="72px"
         height="72px"
@@ -63,37 +73,37 @@ export const DEFAULT_REACT_LOADING_FILES: SandpackBundlerFiles = {
             repeatCount="indefinite"
           />
         </path>
-    </svg></div>
-    }`
+      </svg>
+    </div>
+  );
+}`
   }
 };
 
 //TODO: Figure out why tailwind is so obsessed with compiling bg-[xyz] causing our compile to fail when the file is not there
 export const DEFAULT_REACT_FILES: SandpackBundlerFiles = {
   "/App.jsx": {
-    code: /*tsx*/`
-    import "./styles.css"
+    code: /*tsx*/`import "./styles.css";
 
-    export default function App() {
-
-
-        return (
-          <div className="flex gap-2 w-[300px] h-[400px] bg-slate-500 p-4">
-          <p>This text is big Hmm</p>
-          <div className="bg-blue-400 w-8 h-8" />
-          <div className="bg-red-400 w-8 h-8" />
-          <div className="bg-green-400 w-8 h-8" />
-          </div>  
-        )
-      }
-      `
+export default function App() {
+  return (
+    <div className="flex gap-2 w-[300px] h-[400px] bg-slate-500 p-4">
+      <p>This text is big Hmm</p>
+      <div className="bg-blue-400 w-8 h-8" />
+      <div className="bg-red-400 w-8 h-8" />
+      <div className="bg-green-400 w-8 h-8" />
+    </div>
+  );
+}`
   },
   [FIREJET_SAVE_DATA_PATH]: {
     //TODO: When filenames are the same it may throw errors
     code: JSON.stringify(saveFile)
   },
   [`${ARBITRARY_COMPONENT_FOLDER_PATH}/1/HelloWorld.js`]: {
-    code: /*tsx*/`export default function HelloWorld() {return <p>
+    code: /*tsx*/`export default function HelloWorld() {
+  return (
+    <p>
       Test Test 123
       <br />
       Test 2 1245
@@ -103,11 +113,12 @@ export const DEFAULT_REACT_FILES: SandpackBundlerFiles = {
       </b>
       <div>Testing</div>
       <div>
-
-        <b style={{ textDecorationLine: "underline"}}>Hee </b>
+        <b style={{ textDecorationLine: "underline" }}>Hee </b>
         <i>ha ha</i>
-        </div>
-    </p>}`
+      </div>
+    </p>
+  );
+}`
   },
   "/tailwind.config.js": {
     code: `/** @type {import('tailwindcss').Config} */
