@@ -1,0 +1,24 @@
+{
+  "name": "firejet_take_home_interview",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/pjymichael/Firejet-Take-Home-Interview.git",
+  "author": "Michael <105053755+pjymichael@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "install-deps": "yarn install"
+  },
+  "devDependencies": {
+    "@types/babel__generator": "^7.6.4",
+    "@types/babel__traverse": "^7.18.3",
+    "@types/express": "^4.17.15",
+    "@types/node": "^18.11.18",
+    "@types/prettier": "^2.7.2"
+  },
+  "dependencies": {
+    "@babel/traverse": "^7.20.10",
+    "express": "^4.18.2",
+    "prettier": "^2.8.1"
+  }
+}
